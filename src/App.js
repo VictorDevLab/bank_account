@@ -39,13 +39,14 @@ function reducer(state, action) {
       return { ...state, balance: state.balance + action.payload.amount };
     case "withdraw":
       return { ...state, balance: state.balance - action.payload.amount };
-    case "requestLoan": {
+    case "requestLoan":
+      //some guard close
+      if (state.loan > 0) return state;
       return {
         ...state,
         balance: state.balance + action.payload.amount,
-        loan: state.loan === 0 ? action.payload.amount : state.loan,
+        loan: action.payload.amount,
       };
-    }
     case "payLoan": {
       return {
         ...state,
@@ -54,6 +55,7 @@ function reducer(state, action) {
       };
     }
     case "closeAccount":
+      if (state.loan > 0 || state.balance !== 0) return state;
       return initialState;
 
     default:
